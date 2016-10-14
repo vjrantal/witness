@@ -1,0 +1,19 @@
+{
+  "name": "witness-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ville Rantala",
+  "license": "MIT",
+  "dependencies": {
+    "botbuilder": "^3.2.3",
+    "restify": "^4.1.1",
+    "web3": "^0.17.0-beta"
+  },
+  "devDependencies": {
+    "tape": "^4.6.2"
+  }
+}
