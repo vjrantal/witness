@@ -1,0 +1,11 @@
+#drop-area {
+  border: 1px solid black;
+  width: 90%;
+  height: 100px;
+  margin: 15px;
+  padding: 15px;
+}
+
+#drop-area h2 {
+  text-align: center;
+}

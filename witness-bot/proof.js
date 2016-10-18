@@ -7,7 +7,7 @@ var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 
 var CONTRACT_ABI = JSON.parse('[{"constant":false,"inputs":[{"name":"hash","type":"bytes32"}],"name":"store","outputs":[{"name":"","type":"bytes32"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"bytes32"}],"name":"retrieve","outputs":[{"name":"","type":"bytes32"}],"type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"id","type":"bytes32"}],"name":"Stored","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"hash","type":"bytes32"}],"name":"Retrieved","type":"event"}]');
 var CONTRACT_ADDRESS = '0x40821b9d7ca4080600a6bf57a535b0c7b1da7cb9';
-var URL_PREFIX = 'https://testnet.etherscan.io/tx/'; // TODO: Currently testnet only
+var FRONTEND_URL_PREFIX = 'http://localhost:8080/';
 
 module.exports.store = function (value, callback) {
   if (!web3.isConnected()) {
@@ -19,7 +19,7 @@ module.exports.store = function (value, callback) {
   var witness = witnessContract.at(CONTRACT_ADDRESS);
 
   var hash = '0x' + crypto.createHash('sha256').update(
-    value
+    value, 'utf-8'
   ).digest().toString('hex');
 
   var storedEvent = witness.Stored();
@@ -28,8 +28,8 @@ module.exports.store = function (value, callback) {
     if (error) {
       return callback(new Error(error));
     }
-    var url = URL_PREFIX + event.transactionHash;
-    callback(null, event.args.id, url);
+    var url = FRONTEND_URL_PREFIX + '?hash=' + event.transactionHash + '&id=' + event.args.id;
+    callback(null, url);
   });
   witness.store(hash);
 };

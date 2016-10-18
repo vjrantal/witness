@@ -24,15 +24,29 @@ bot.dialog('/', new builder.IntentDialog()
       session.send('Failed to store the proof');
       return;
     }
+    if (!session.conversationData.conversation) {
+      session.send('Haven\'t yet witnessed any conversation');
+      return;
+    }
     session.send('Started storing the proof...');
     var value = JSON.stringify(session.conversationData.conversation);
+
     // Clear the conversation that was collected so far
     delete session.conversationData.conversation;
+
     // Store the string value of the conversation
-    proof.store(value, function (error, id, url) {
+    proof.store(value, function (error, url) {
+      var attachment = {
+        contentUrl: 'data:text/plain;base64,' + new Buffer(value).toString('base64'),
+        contentType: 'text/plain',
+        name: 'conversation.txt'
+      };
+
       var msg = new builder.Message()
-          .address(session.message.address)
-          .text('Proof stored and can be viewed at ' + url);
+        .address(session.message.address)
+        .text('Please store the attached conversation to prove it later at ' + url)
+        .addAttachment(attachment);
+
       bot.send(msg);
     });
   })
