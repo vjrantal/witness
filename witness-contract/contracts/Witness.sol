@@ -1,3 +1,5 @@
+pragma solidity ^0.4.2;
+
 contract Witness {
 
   mapping(bytes32 => bytes32) hashes;
