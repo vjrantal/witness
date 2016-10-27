@@ -28,14 +28,27 @@ bot.dialog('/', new builder.IntentDialog()
       session.send('Haven\'t yet witnessed any conversation');
       return;
     }
+
     session.send('Started storing the proof...');
+    session.sendBatch();
+
     var value = JSON.stringify(session.conversationData.conversation);
 
     // Clear the conversation that was collected so far
     delete session.conversationData.conversation;
+    session.save();
+
+    // Start indicating to the user that the bot is working on it
+    session.sendTyping();
+    var typingInterval = setInterval(function () {
+      session.sendTyping();
+    }, 2000);
 
     // Store the string value of the conversation
     proof.store(value, function (error, url) {
+      // Stop the working indication
+      clearInterval(typingInterval);
+
       var attachment = {
         contentUrl: 'data:text/plain;base64,' + new Buffer(value).toString('base64'),
         contentType: 'text/plain',
