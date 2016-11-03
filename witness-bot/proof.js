@@ -31,7 +31,13 @@ module.exports.store = function (value, callback) {
     var url = FRONTEND_URL_PREFIX + '?hash=' + event.transactionHash + '&id=' + event.args.id;
     callback(null, url);
   });
-  witness.store(hash);
+  witness.store(hash, function (error) {
+    console.trace(arguments);
+    if (error) {
+      storedEvent.stopWatching();
+      return callback(new Error(error));
+    }
+  });
 };
 
 module.exports.isConnected = function () {

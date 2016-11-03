@@ -49,16 +49,19 @@ bot.dialog('/', new builder.IntentDialog()
       // Stop the working indication
       clearInterval(typingInterval);
 
-      var attachment = {
-        contentUrl: 'data:text/plain;base64,' + new Buffer(value).toString('base64'),
-        contentType: 'text/plain',
-        name: 'conversation.txt'
-      };
-
       var msg = new builder.Message()
-        .address(session.message.address)
-        .text('Please store the attached conversation to prove it later at ' + url)
-        .addAttachment(attachment);
+        .address(session.message.address);
+
+      if (error) {
+        msg.text(error + '');
+      } else {
+        msg.text('Please store the attached conversation to prove it later at ' + url);
+        msg.addAttachment({
+          contentUrl: 'data:text/plain;base64,' + new Buffer(value).toString('base64'),
+          contentType: 'text/plain',
+          name: 'conversation.txt'
+        });
+      }
 
       bot.send(msg);
     });
