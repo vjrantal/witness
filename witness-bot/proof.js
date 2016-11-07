@@ -3,7 +3,8 @@
 var crypto = require('crypto');
 
 var Web3 = require('web3');
-var web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
+var providerUrl = process.env.RPC_ENDPOINT_URL || 'http://localhost:8545';
+var web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
 var CONTRACT_ABI = JSON.parse('[{"constant":false,"inputs":[{"name":"hash","type":"bytes32"}],"name":"store","outputs":[{"name":"","type":"bytes32"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"bytes32"}],"name":"retrieve","outputs":[{"name":"","type":"bytes32"}],"type":"function"},{"anonymous":false,"inputs":[{"indexed":false,"name":"id","type":"bytes32"}],"name":"Stored","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"hash","type":"bytes32"}],"name":"Retrieved","type":"event"}]');
 var CONTRACT_ADDRESS = '0x40821b9d7ca4080600a6bf57a535b0c7b1da7cb9';
