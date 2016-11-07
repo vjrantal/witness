@@ -32,7 +32,6 @@ module.exports.store = function (value, callback) {
     callback(null, url);
   });
   witness.store(hash, function (error) {
-    console.trace(arguments);
     if (error) {
       storedEvent.stopWatching();
       return callback(new Error(error));
