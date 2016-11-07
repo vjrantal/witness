@@ -5,18 +5,12 @@ var builder = require('botbuilder');
 
 var proof = require('./proof.js');
 
-var server = restify.createServer();
-server.listen(process.env.port || process.env.PORT || 3978, function () {
-  console.log('%s listening to %s', server.name, server.url);
-});
-
 var connector = new builder.ChatConnector({
   appId: process.env.CHAT_CONNECTOR_APP_ID,
   appPassword: process.env.CHAT_CONNECTOR_APP_PASSWORD
 });
 
 var bot = new builder.UniversalBot(connector, { persistConversationData: true });
-server.post('/api/messages', connector.listen());
 
 bot.dialog('/', new builder.IntentDialog()
   .matches(/.witness.*store$/i, function (session) {
@@ -75,3 +69,17 @@ bot.dialog('/', new builder.IntentDialog()
     session.endDialog();
   })
 );
+
+var listener = connector.listen();
+
+if (process.env.FUNCTIONS_EXTENSION_VERSION) {
+  module.exports = function (context, req) {
+    listener(req, context.res);
+  };
+} else {
+  server.post('/api/messages', listener);
+  var server = restify.createServer();
+  server.listen(process.env.port || process.env.PORT || 3978, function () {
+    console.log('%s listening to %s', server.name, server.url);
+  });
+}
